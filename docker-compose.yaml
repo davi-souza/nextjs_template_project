@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  project:
+    image: node:14-alpine
+    container_name: project
+    working_dir: /project/
+    env_file:
+      - ./.env
+    command: npm run dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/project/:consistent
+  project-db:
+    image: postgres:13-alpine
+    container_name: project-db
+    env_file:
+      - ./.env
+    ports:
+      - 5432:5432
+    volumes:
+      - project-db-volume:/var/lib/postgresql/data/:consistent
+
+networks:
+  default:
+    external:
+      name: default_network
+volumes:
+  project-db-volume:
+    external: true
